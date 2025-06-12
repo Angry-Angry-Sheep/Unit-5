@@ -429,7 +429,6 @@ void mousePressed() {
       gameStarted = true;
       return;
     }
-    // CREDITS button (if you implement it later)...
 
     // QUIT button
     float quitBtnY = startBtnY + 60;
@@ -461,15 +460,13 @@ void mousePressed() {
       player = new Player(width / 2, height - 100);
       return;
     }
-    // MENU button
+
     float menuBtnY = restartBtnY + 30;
     float menuBtnW = 150;
     if (mouseX > restartBtnX - menuBtnW/2 && mouseX < restartBtnX + menuBtnW/2 &&
         mouseY > menuBtnY - buttonHeight/2 && mouseY < menuBtnY + buttonHeight/2) {
-      // Go back to title screen
       gameStarted = false;
       clearInput();
-      // (Optionally clear other state if needed)
       return;
     }
   }
