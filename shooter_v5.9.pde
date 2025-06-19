@@ -131,17 +131,18 @@ void draw() {
     drawButton(startBtnX, startBtnY, 200, 20, "START");
     drawButton(startBtnX, startBtnY + 30, 150, 20, "STORE");
     drawButton(startBtnX, startBtnY + 60, 150, 20, "QUIT");
-    //text("Press ENTER to Start", width / 2, height / 2 + 20);
     return;
   }
   else if (inStore) {
     // Back to main menu
-    if (isMouseOver(width/2, 240, 180, 30) && mousePressed) {
+    if (isMouseOver(width/2, 360, 180, 30) && mousePressed && !clickConsumed) {
+      clickConsumed = true;
       inStore = false;
       return;
     }
     // Buy Extra Life
-    if (isMouseOver(width/2, 200, 180, 30) && money >= 50 && mousePressed) {
+    if (isMouseOver(width/2, 200, 180, 30) && money >= 50 && mousePressed && !clickConsumed) {
+      clickConsumed = true;
       money -= 50;
       maxLives++;
       lives = maxLives;
@@ -156,9 +157,11 @@ void draw() {
     text("== STORE ==", width/2, 80);
     textSize(24);
     text("Money: $" + money, width/2, 130);
-    // example purchase button:
-    drawButton(width/2, 200, 180, 30, "Buy Extra Life ($50)");
-    drawButton(width/2, 240, 180, 30, "Back to Menu");
+    drawButton(width/2, 200, 180, 30, "Extra Life ($50)");
+    drawButton(width/2, 240, 180, 30, "Pulse Power ($75)");
+    drawButton(width/2, 280, 180, 30, "Magnet Module ($75)");
+    drawButton(width/2, 320, 180, 30, "Laser Module ($500)");
+    drawButton(width/2, 360, 180, 30, "Back to Menu");
     return;
   }
 
@@ -209,7 +212,6 @@ void draw() {
     restartBtnY = height / 2 + 50;
     drawButton(restartBtnX, restartBtnY, 200, 20, "RESPAWN");
     drawButton(restartBtnX, restartBtnY + 30, 150, 20, "MENU");
-    //text("Press R to Respawn", width / 2, height / 2 + 50);
     return;
   }
 
@@ -300,15 +302,12 @@ void draw() {
         dx /= mag;
         dy /= mag;
       }
-      // Move collectable toward player at magnetSpeed
       c.x += dx * magnetSpeed;
       c.y += dy * magnetSpeed;
 
-      // Still rotate it (copying what update() did)
       c.rotation += c.rotationSpeed;
     } 
     else {
-      // Normal falling + rotation
       c.update();
     }
 
@@ -337,15 +336,14 @@ void draw() {
 
   // —————— Laser Beam Rendering & Damage ——————
 if (laserDamage > 0) {
-  // 1) Pulsing beam thickness:
+  // Pulsing beam thickness:
   float pulseFactor   = 1 + 0.3 * sin(radians(frameCount * 5));
   float beamWidth     = laserDamage * pulseFactor;
   float beamCoreWidth = max(2, beamWidth * 0.3);
   float halfBeam      = beamWidth / 2.0;
 
-  // 2) Find the blocker enemy:
-  //    We want the enemy whose CIRCLE (radius = e.getRadius()) intersects the vertical
-  //    band [player.x - halfBeam, player.x + halfBeam], and that is closest (largest e.y + radius).
+  // Find the blocker enemy:
+
   Enemy blocker    = null;
   float blockerY   = -1;
   for (Enemy e : enemies) {
@@ -363,23 +361,23 @@ if (laserDamage > 0) {
     }
   }
 
-  // 3) Compute beam endpoints (beamBottom is just above player, beamTop is at blocker or top of screen):
+  // Compute beam endpoints
   float beamBottom = player.y - player.getRadius();
   float beamTop    = (blocker != null) ? blockerY : 0;
 
-  // 4) Draw red outer glow (semi‐transparent) from beamBottom up to beamTop
+  // Draw red outer glow
   stroke(255, 0, 0, 180);
   strokeWeight(beamWidth);
   line(player.x, beamBottom, player.x, beamTop);
 
-  // 5) Draw white inner core
+  // Draw white inner core
   stroke(255, 255, 255, 220);
   strokeWeight(beamCoreWidth);
   line(player.x, beamBottom, player.x, beamTop);
 
   noStroke();
 
-  // 6) Damage only that blocker (if it exists)
+  // Damage only that blocker
   if (blocker != null) {
     blocker.hp -= laserDamage / (frameRate * 1.5);
     if (blocker.hp <= 0) {
@@ -486,7 +484,7 @@ void mousePressed() {
     float quitBtnY = startBtnY + 60;
     float quitBtnW = 150;
     if (mouseX > startBtnX - quitBtnW/2 && mouseX < startBtnX + quitBtnW/2 &&
-        mouseY > quitBtnY - buttonHeight/2 && mouseY < quitBtnY + buttonHeight/2) {
+        mouseY > quitBtnY - buttonHeight/2 && mouseY < quitBtnY + buttonHeight/2 && !inStore) {
       exit();  // close the Processing sketch
     }
     
