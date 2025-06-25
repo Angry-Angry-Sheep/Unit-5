@@ -619,7 +619,7 @@ void mousePressed() {
     float quitBtnW = 150;
     if (mouseX > startBtnX - quitBtnW/2 && mouseX < startBtnX + quitBtnW/2 &&
         mouseY > quitBtnY - buttonHeight/2 && mouseY < quitBtnY + buttonHeight/2 && !inStore) {
-      exit();  // close the Processing sketch
+      exit();
     }
     
     // STORE BUTTON
@@ -1058,9 +1058,9 @@ class Collectable {
 class BigCollectable extends Collectable {
   float x, y;
   float vy = 2;
-  float size = 26;         // Size of the lemon and its hitbox
-  float rotation = 0;      // Current rotation angle in radians
-  float rotationSpeed = 5;     // How fast it spins
+  float size = 26;
+  float rotation = 0;
+  float rotationSpeed = 5;
 
   BigCollectable(float x, float y) {
     super(x,y);
@@ -1235,7 +1235,7 @@ class Boss extends Enemy {
     // give the boss an initial random patrol velocity
     float angle = random(TWO_PI);
     vx = cos(angle) * maxSpeed;
-    vy = sin(angle) * maxSpeed * 0.5;  // bias vertical lower if you like
+    vy = sin(angle) * maxSpeed * 0.5;
   }
   
   @Override
